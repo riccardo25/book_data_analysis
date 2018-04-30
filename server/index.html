@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="iso-8859-1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+
+<title>Terre del Faet</title>
+<!--  CSS  -->
+<link rel="stylesheet" href="css/index.css" />
+
+<!-- JS -->
+
+<!--<script language="javascript" src="js/back_slideshow.js" ></script>-->
+<!-- GLOBALS -->
+<script>
+    var selected = [];
+    var n_select_books = 3;
+</script>
+<!-- ONLOAD FUNCTION-->
+    
+
+<script>
+    
+
+    function _onload() {
+        getSelectionImages()
+    }
+    window.onload = _onload;
+</script>
+
+<script>
+
+    function getSelectionImages()
+    {
+        var xhttp;
+        
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                //document.getElementById("prima").innerHTML = this.responseText;
+                
+                var parsed = parsebook(this.responseText)
+                
+                var id = parsed[0]
+                var title = parsed[1]
+                var price = parsed[2]
+                var author = parsed[3]
+                console.log(id)
+                var over = document.getElementById("overlay"); 
+                for (var i=0 ; i<id.length; i++)
+                {
+                    var g = document.createElement('div');
+                    g.setAttribute("id", id[i].toString());
+                    g.setAttribute("class", "imagebox");
+                    g.setAttribute("onclick", "select_book("+id[i]+")")
+                    g.style.backgroundImage = "url('../sampleImages/"+id[i].toString()+".jpg')";
+                    over.appendChild(g);  
+                }
+            }
+        };
+        xhttp.open("GET", "http://localhost:8000/?func=getselectionimages", true);
+        xhttp.send();
+    }
+
+    function getsuggest()
+    {
+        var xhttp;
+        
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                //document.getElementById("prima").innerHTML = this.responseText;
+                
+                var parsed = parsebook(this.responseText)
+
+                var id = parsed[0]
+                var title = parsed[1]
+                var price = parsed[2]
+                var author = parsed[3]
+
+                console.log(id)
+                var container = document.getElementById("container1"); 
+                for (var i=0 ; i<id.length; i++)
+                {
+                    var g = document.createElement('div');
+                    g.setAttribute("id", "suggested"+id[i].toString());
+                    g.setAttribute("class", "imagebox");
+                    //g.setAttribute("onclick", "select_book("+id[i]+")")
+                    g.style.backgroundImage = "url('../sampleImages/"+id[i].toString()+".jpg')";
+                    container.appendChild(g);  
+                }
+            }
+        };
+        var str = ""
+        for (var i =0; i<n_select_books; i++)
+            str += "&b"+i.toString()+"="+selected[i].toString()
+        
+        xhttp.open("GET", "http://localhost:8000/?func=suggestbooks"+str, true);
+        xhttp.send();
+    }
+
+    function showHint() {
+        var xhttp;
+        
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("prima").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "http://localhost:8000", true);
+        xhttp.send();   
+}
+</script>
+
+<script>
+    
+
+    function parsebook(strin) {
+
+        returnid = []
+        returntitle = []
+        returnprice = []
+        returnauthor = []
+
+        splitted = strin.split(",")
+        for (var i= 0; i< splitted.length; i++) {
+            singlebook = splitted[i].split("/")
+            returnid.push(singlebook[0])
+            returntitle.push(singlebook[1])
+            returnprice.push(singlebook[2])
+            returnauthor.push(singlebook[3])
+        }
+        return [returnid, returntitle, returnprice, returnauthor ]
+
+
+    }
+
+    function select_book(x)
+    {
+        book = document.getElementById(x.toString())
+
+        var index = selected.indexOf(x);
+
+        if (index > -1) {
+            selected.splice(index, 1);
+            book.setAttribute("class", "imagebox")
+        }
+        else
+        {
+            selected[selected.length] = x
+            book.setAttribute("class", "selectedimagebox")
+        }
+        console.log(selected)
+        
+        
+        if(selected.length > n_select_books-1) {
+            //remove overlay
+            document.getElementById("granoverlay").style.display = 'none';
+            document.getElementById("overlaytitle").style.display = 'none';
+            document.getElementById("overlay").style.display = 'none';
+            createcontent()
+        }
+        else {
+
+            var n = (n_select_books-selected.length);
+            var tit = "titoli che ti piacciono"
+            if(n == 1)
+                tit = "titolo che ti piace"
+            document.getElementById("overlaytitle").innerHTML = "Seleziona "+n.toString()+" "+tit+"..."
+        }
+    }
+
+    function createcontent(){
+
+        getsuggest()
+        document.getElementById("containerbody").style.display = 'inherit';
+    }
+
+</script>
+
+</head>
+
+<body>
+
+
+<div class="granparent" id="granoverlay">
+    <h1 id="overlaytitle">Quali titoli ti piacciono di piu'?</h1>
+    <div class="overlay_container" id="overlay">
+        <!--<div class="imagebox" onclick="select_book(0)" id="0"></div>-->
+    </div>
+</div>
+
+<div class="contenent" id="containerbody" style="display:  none;">
+    <h1 >Benvenuto su NetBook </h2>
+    <h2 class="sectiontitle">Secondo i nostri lettori potrebbero interessarti: </h2>
+    <div class="suggested_container" id="container1">
+            
+
+    </div>
+</div>
+
+
+
+<!--<img src="D:\\foto\\sampleImages\1.jpg"></img>-->
+
+	
+   
+</body>
+</html>
