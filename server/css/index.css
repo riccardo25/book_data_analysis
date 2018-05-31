@@ -28,26 +28,27 @@ body {
 
 
 .overlay_container {
+    display: block;
     background: rgb(32, 32, 32);
     margin:0;
-    margin-left: 20px;
-    margin-right: 20px;
     padding: 0;
-    width: 3000px;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 3200px;
+    min-width: 3200px;
     height: 100%;
-    background: rgb(32, 32, 32);
 }
 
 .imagebox {
-    
     background-repeat:  no-repeat;
     background-size: cover;
     float: left;
     width: 110px;
     height: 150px;
-    margin: 20px;
-    margin-left: 15px;
-    margin-right: 15px;
+    margin: 30px;
+    padding: -1px;
+    margin-left: 20px;
+    margin-right: 20px;
     background-color: rgb(70, 70, 70);
     transition: transform .2s;
     border-style: solid;
@@ -59,10 +60,7 @@ body {
 }
 
 
-.imagebox:hover{
-    transform: scale(1.5);
-    cursor: pointer;
-}
+
 
 .selectedimagebox {
     
@@ -71,9 +69,9 @@ body {
     float: left;
     width: 110px;
     height: 150px;
-    margin: 20px;
-    margin-left: 15px;
-    margin-right: 15px;
+    margin: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
     background-color: rgb(70, 70, 70);
     transition: transform .2s;
     border-style: solid;
@@ -83,6 +81,38 @@ body {
     cursor: pointer;
 
 }
+
+.imgboxdesc {
+
+    display: none;
+    text-align: center;
+    bottom: 0px;
+    margin: -1px;
+    padding: 6px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
+    border-style: solid;
+    border-color: rgb(50, 50, 50);
+    border-width: 1px;
+    border-style: solid;
+    color: whitesmoke;
+    font-family: sans-serif;
+    font-size: 8px;
+    background-color: rgb(50,50,50)
+}
+
+.imagebox:hover{
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+.imagebox:hover .imgboxdesc{
+    display: inherit;
+    
+}
+
 
 
 
@@ -110,5 +140,12 @@ body {
 }
 
 .suggested_container{
-    margin: 20px;
+    display: inline-block;
+    background: rgb(32, 32, 32);
+    margin:0;
+    padding: 0;
+    padding-left: 20px;
+    padding-right: 20px;
+    width:100%
+
 }

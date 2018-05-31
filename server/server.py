@@ -11,7 +11,8 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
 
         #get the predictions source
-        pred = Predictions()
+        self.pred = Predictions()
+
     # Send response status code
         self.send_response(200)    
         # Send headers
@@ -22,9 +23,9 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
         parsed = urlparse.urlparse(self.path)
         parameters = urlparse.parse_qs(parsed.query)
         print(parameters)
-        if(True):
+        if("func" in parameters):
             if(parameters["func"][0] == "getselectionimages"):
-                message = pred.getselectionimages()
+                message = self.pred.getselectionimages()
             elif(parameters["func"][0] == "suggestbooks"):
                 bookin = []
                 for b in range(50):
@@ -34,10 +35,31 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
                         bookin.append(book)
                     except:
                         break
-                message = pred.suggestBooks(bookin)
+                message = self.pred.suggestBooks(bookin)
+            elif(parameters["func"][0] == "suggestauthorbooks"):
+                bookin = []
+                for b in range(50):
+                    book = -1
+                    try:
+                        book = int(parameters["b"+str(b)][0])
+                        bookin.append(book)
+                    except:
+                        break
+                message = self.pred.suggestauthorbooks(bookin)
+            elif(parameters["func"][0] == "suggestgenderbooks"):
+                bookin = []
+                for b in range(50):
+                    book = -1
+                    try:
+                        book = int(parameters["b"+str(b)][0])
+                        bookin.append(book)
+                    except:
+                        break
+                message = self.pred.suggestgenderbooks(bookin)
             else:
                 message = "Not function set!"
-        
+        else:
+            message = "Not Allowed!"
         # Write content as utf-8 data
         self.wfile.write(bytes(message, "utf8"))
         return

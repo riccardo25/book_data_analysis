@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
 
-<title>Terre del Faet</title>
+<title>Netbook</title>
 <!--  CSS  -->
 <link rel="stylesheet" href="css/index.css" />
 
@@ -55,6 +55,11 @@
                     g.setAttribute("class", "imagebox");
                     g.setAttribute("onclick", "select_book("+id[i]+")")
                     g.style.backgroundImage = "url('../sampleImages/"+id[i].toString()+".jpg')";
+
+                    var didas = document.createElement('div');
+                    didas.setAttribute("class", "imgboxdesc");
+                    didas.innerHTML = title[i];
+                    g.appendChild(didas);
                     over.appendChild(g);  
                 }
             }
@@ -81,13 +86,18 @@
 
                 console.log(id)
                 var container = document.getElementById("container1"); 
-                for (var i=0 ; i<id.length; i++)
+                for (var i=0 ; i<id.length && i < 16; i++)
                 {
                     var g = document.createElement('div');
                     g.setAttribute("id", "suggested"+id[i].toString());
                     g.setAttribute("class", "imagebox");
                     //g.setAttribute("onclick", "select_book("+id[i]+")")
                     g.style.backgroundImage = "url('../sampleImages/"+id[i].toString()+".jpg')";
+
+                    var didas = document.createElement('div');
+                    didas.setAttribute("class", "imgboxdesc");
+                    didas.innerHTML = title[i]+"<br/>Price: $"+price[i];
+                    g.appendChild(didas);
                     container.appendChild(g);  
                 }
             }
@@ -100,6 +110,89 @@
         xhttp.send();
     }
 
+
+    function getsuggestauthorbooks() {
+        var xhttp;
+        
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                //document.getElementById("prima").innerHTML = this.responseText;
+                
+                var parsed = parsebook(this.responseText)
+
+                var id = parsed[0]
+                var title = parsed[1]
+                var price = parsed[2]
+                var author = parsed[3]
+
+                console.log(id)
+                var container = document.getElementById("container2"); 
+                for (var i=0 ; i<id.length && i < 16; i++)
+                {
+                    var g = document.createElement('div');
+                    g.setAttribute("id", "suggested"+id[i].toString());
+                    g.setAttribute("class", "imagebox");
+                    //g.setAttribute("onclick", "select_book("+id[i]+")")
+                    g.style.backgroundImage = "url('../sampleImages/"+id[i].toString()+".jpg')";
+
+                    var didas = document.createElement('div');
+                    didas.setAttribute("class", "imgboxdesc");
+                    didas.innerHTML = title[i]+"<br/>Price: $"+price[i];
+                    g.appendChild(didas);
+                    container.appendChild(g);  
+                }
+            }
+        };
+        var str = ""
+        for (var i =0; i<n_select_books; i++)
+            str += "&b"+i.toString()+"="+selected[i].toString()
+        
+        xhttp.open("GET", "http://localhost:8000/?func=suggestauthorbooks"+str, true);
+        xhttp.send();
+
+    }
+
+
+    function getsuggestgenderbooks() {
+
+        var xhttp;
+        
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                //document.getElementById("prima").innerHTML = this.responseText;
+                var parsed = parsebook(this.responseText)
+                var id = parsed[0]
+                var title = parsed[1]
+                var price = parsed[2]
+                var author = parsed[3]
+                console.log(id)
+                var container = document.getElementById("container3"); 
+                for (var i=0 ; i<id.length && i < 16; i++)
+                {
+                    var g = document.createElement('div');
+                    g.setAttribute("id", "suggested"+id[i].toString());
+                    g.setAttribute("class", "imagebox");
+                    //g.setAttribute("onclick", "select_book("+id[i]+")")
+                    g.style.backgroundImage = "url('../sampleImages/"+id[i].toString()+".jpg')";
+
+                    var didas = document.createElement('div');
+                    didas.setAttribute("class", "imgboxdesc");
+                    didas.innerHTML = title[i]+"<br/>Price: $"+price[i];
+                    g.appendChild(didas);
+                    container.appendChild(g);  
+                }
+            }
+        };
+        var str = ""
+        for (var i =0; i<n_select_books; i++)
+            str += "&b"+i.toString()+"="+selected[i].toString()
+        
+        xhttp.open("GET", "http://localhost:8000/?func=suggestgenderbooks"+str, true);
+        xhttp.send();
+        
+    }
     function showHint() {
         var xhttp;
         
@@ -175,6 +268,8 @@
     function createcontent(){
 
         getsuggest()
+        getsuggestauthorbooks()
+        getsuggestgenderbooks()
         document.getElementById("containerbody").style.display = 'inherit';
     }
 
@@ -185,21 +280,29 @@
 <body>
 
 
-<div class="granparent" id="granoverlay">
+<aside class="granparent" id="granoverlay">
     <h1 id="overlaytitle">Quali titoli ti piacciono di piu'?</h1>
-    <div class="overlay_container" id="overlay">
-        <!--<div class="imagebox" onclick="select_book(0)" id="0"></div>-->
-    </div>
-</div>
+    <nav class="overlay_container" id="overlay">
+        <!--<div class="imagebox" onclick="select_book(0)" id="0"><div class="imgboxdesc">Harry Potter and the phylosopher stone</br> Prezzo 15.30</div></div>-->
+    </nav>
+</aside>
 
-<div class="contenent" id="containerbody" style="display:  none;">
+<main class="contenent" id="containerbody" style="display:  none;">
     <h1 >Benvenuto su NetBook </h2>
     <h2 class="sectiontitle">Secondo i nostri lettori potrebbero interessarti: </h2>
-    <div class="suggested_container" id="container1">
-            
+    <nav class="suggested_container" id="container1">
 
-    </div>
-</div>
+    </nav>
+    <h2 class="sectiontitle">Relativamente agli autori scelti ti consigliamo: </h2>
+    <nav class="suggested_container" id="container2">
+
+    </nav>
+
+    <h2 class="sectiontitle">Relativamente ai generi scelti: </h2>
+    <nav class="suggested_container" id="container3">
+
+    </nav>
+</main>
 
 
 
